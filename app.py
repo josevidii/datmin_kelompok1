@@ -6,13 +6,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import re
 import nltk
-from nltk.tokenize import word_tokenize
+
 import streamlit as st
 
 # NLTK Downloads
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
+
+from nltk.tokenize import word_tokenize
 
 # WordCloud
 from wordcloud import WordCloud
