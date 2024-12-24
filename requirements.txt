@@ -7,5 +7,4 @@ nltk
 wordcloud
 scikit-learn
 imblearn
-gensim
 pyLDAvis
