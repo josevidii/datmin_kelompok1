@@ -1,3 +1,4 @@
+
 from collections import Counter
 
 import pandas as pd
@@ -6,15 +7,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import re
 import nltk
-
+from nltk.tokenize import word_tokenize
 import streamlit as st
 
 # NLTK Downloads
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
-
-from nltk.tokenize import word_tokenize
 
 # WordCloud
 from wordcloud import WordCloud
@@ -47,7 +46,7 @@ import gensim.corpora as corpora
 from gensim.models import CoherenceModel
 
 import pyLDAvis
-import pyLDAvis.gensim_models as gensimvis
+import pyLDAvis.gensim_models
 
 import io
 
@@ -71,7 +70,7 @@ def preprocess_text(text):
     text = text.lower()
     text = re.sub(r"http\S+|www\S+|https\S+", "", text, flags=re.MULTILINE)
     text = re.sub(r"[^a-zA-Z0-9\s]", "", text)
-    text = re.sub(r'[\^\w\s]', '', text)
+    text = re.sub(r'[^\w\s]', '', text)
     text = re.sub(r'\d', '', text)
     
     stop_words = set(stopwords.words('english'))
@@ -82,7 +81,7 @@ def lemmatize_tokens(tokens):
     lemmatizer = WordNetLemmatizer()
     return [lemmatizer.lemmatize(token) for token in tokens]
 
-def prediction(vec_text):
+def prediction(vec_text,):
     pred = logreg.predict(vec_text)
     probabilities = logreg.predict_proba(vec_text)
     return pred, probabilities
@@ -110,7 +109,7 @@ if menu == "Prediksi Lowongan Pekerjaan":
         
         combined_string = " ".join(data_list)
         
-        input_df = pd.DataFrame([combined_string], columns=["job_posting"])
+        input_df = pd.DataFrame([combined_string],columns=["job_posting"])
     
         input_df['job_posting'] = input_df['job_posting'].apply(preprocess_text)
         input_df['job_posting_tokens'] = input_df['job_posting'].apply(word_tokenize)
@@ -177,10 +176,12 @@ if menu == "Prediksi Lowongan Pekerjaan":
             unsafe_allow_html=True
             )
 
+
+
 elif menu == "Topik-topik di Lowongan Pekerjaan Palsu":
 
     lda_df = pd.read_csv("fake_job_postings.csv")
-    lda_df.fillna("", inplace=True)
+    lda_df.fillna("",inplace=True)
 
     # List of columns to concatenate
     columns_to_concat = ['title', 'company_profile', 'description', 'requirements', 'benefits', 'employment_type',
@@ -221,7 +222,7 @@ elif menu == "Topik-topik di Lowongan Pekerjaan Palsu":
     st.title("Topics in Fake Job Postings")
 
     # Prepare the visualization using pyLDAvis
-    vis = gensimvis.prepare(lda, corpus, id2word, sort_topics=True)
+    vis = pyLDAvis.gensim_models.prepare(lda, corpus, id2word, sort_topics=True)
 
     # Convert the visualization to HTML format
     html = pyLDAvis.prepared_data_to_html(vis)
@@ -264,6 +265,7 @@ elif menu == "Topik-topik di Lowongan Pekerjaan Palsu":
                 topic_id = highest_topic[0]
                 topic_probability = highest_topic[1] * 100
                 
+
                 st.write("### Topics Identified:")
                 st.markdown(f"**The highest probability topic is Topic {topic_id+1} with {round(topic_probability, 2)}% relevance.**")
                 for i, topic_prob in enumerate(topics):
